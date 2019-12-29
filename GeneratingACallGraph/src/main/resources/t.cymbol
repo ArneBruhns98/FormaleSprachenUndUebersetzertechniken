@@ -1,0 +1,32 @@
+int main(){
+    fact(42);
+    a();
+}
+
+float fact (int n) {
+    fact(n);
+}
+
+void a() {
+    int x = b();
+    if false then {
+        c();
+        d();
+    }
+}
+
+void b() {
+    c();
+}
+
+void c() {
+    b();
+}
+
+void d() {
+
+}
+
+void e(){
+
+}

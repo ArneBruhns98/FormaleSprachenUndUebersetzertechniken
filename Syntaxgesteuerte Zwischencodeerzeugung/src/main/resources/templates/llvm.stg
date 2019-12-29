@@ -1,0 +1,199 @@
+mergeTemplates(templates) ::= <<<templates:{template | <template>}; separator="\n"> >>
+
+////////////////////////////////////
+//INSTANCES OF FUNCTIONDECL RULES//
+//////////////////////////////////
+
+functionDecl(ID, formalParams, globals, block) ::= <<
+define i32 @<ID>(<formalParams.params:{param | i32 %<param>_arg}; separator=", ">){
+<formalParams.params :{param | <initParam(param)>}; separator="\n">
+<globals :{param | <initGlobal(param)>}; separator="\n">
+<\t>%ps = getelementptr [4 x i8], [4 x i8]* @s, i32 0, i32 0
+<block>
+}
+>>
+
+initParam(param) ::= <<
+<\t>%<param> = alloca i32
+<\t>store i32 %<param>_arg, i32* %<param>
+>>
+
+initGlobal(param) ::= <<
+<\t>%<param.variable> = alloca i32
+>>
+
+
+/////////////////////////////////////////
+//INSTANCES OF FORMAL PARAMETERS RULES//
+///////////////////////////////////////
+
+formalParameters(params) ::= <<<params:{param | <param>}; separator=", ">
+>>
+
+////////////////////////////////////////
+//INSTANCES OF FORMAL PARAMETER RULES//
+//////////////////////////////////////
+
+formalParameter(variable) ::= <<
+<variable>
+>>
+
+///////////////////////////////////
+//INSTANCES OF FORMAL STAT RULES//
+/////////////////////////////////
+
+stat_expr_int(expr, reg) ::= <<
+<\t>%r<reg> = alloca i32, align 4<\n><\t>store i32 <expr>, i32* %r<reg>
+>>
+
+stat_expr_id(expr) ::= <<
+<\t>%<expr>
+>>
+
+/////////////////////////////
+//INSTANCES OF BLOCK RULES//
+///////////////////////////
+
+block(params) ::= <<
+<params:{param | <param>}; separator="\n">
+>>
+
+//////////////////////////////////
+//INSTANCES OF ASSIGNSTAT RULES//
+////////////////////////////////
+
+assignToLocal(variable, expr) ::= <<
+<expr>
+<\t>store i32 %r<expr.reg>, i32* %<variable>
+>>
+
+//<\t>%<variable> = alloca i32 (erste Zeile)
+assignToGlobal(variable, expr) ::= <<
+<expr>
+<\t>store i32 %r<expr.reg>, i32* %<variable>
+>>
+
+//////////////////////////////
+//INSTANCES OF IFSTAT RULES//
+////////////////////////////
+
+ifElse(cond, stat1, stat2, tmp) ::= <<
+<cond>
+<\t>br i1 %r<cond.reg>, label %true<tmp>, label %false<tmp>
+<\t>true<tmp>:
+<stat1>
+<\t>ret i32 0
+<\t>false<tmp>:
+<stat2>
+<\t>ret i32 0
+>>
+
+if(cond, stat1, tmp) ::= <<
+<cond>
+<\t>br i1 %r<cond.reg>, label %true<tmp>, label %false<tmp>
+<\t>true<tmp>:
+<stat1>
+<\t>ret i32 0
+<\t>false<tmp>:
+<\t>ret i32 0
+>>
+
+/////////////////////////////////
+//INSTANCES OF WHILESTAT RULES//
+///////////////////////////////
+
+while(cond, stat, tmp) ::= <<
+br label %loop<tmp>
+loop<tmp>:
+<cond>
+    br i1 %r<cond.reg>, label %start<tmp>, label %end<tmp>
+start<tmp>:
+<stat>
+    br label %loop<tmp>
+end<tmp>:
+>>
+
+//////////////////////////////////
+//INSTANCES OF RETURNSTAT RULES//
+////////////////////////////////
+return(reg) ::= <<<\t>ret i32 %r<reg>
+>>
+
+////////////////////////////
+//INSTANCES OF ARGS RULES//
+//////////////////////////
+args(templates) ::= <<<templates:{template | <template.reg>}; separator=", ">
+>>
+
+//////////////////////////////
+//INSTANCES OF PRINTF RULES//
+////////////////////////////
+printf(args, reg) ::= <<
+<args; separator="\n">
+<\t>call i32 (i8*, ...) @printf(i8* %ps,  <reg>)
+>>
+
+printDecl() ::= <<
+@s = internal constant [4 x i8] c"%d\0A\00"
+declare i32 @printf(i8 *, ...)
+>>
+
+///////////////////////////////
+//INSTANCES OF VARDECL RULES//
+/////////////////////////////
+
+varDeclLocal(variable) ::= <<<\t>%<variable.name> = alloca i32>>
+varDeclGlobal(variable, scope) ::= <<@<variable.name> = <scope> i32 0>>
+
+////////////////////////////
+//INSTANCES OF EXPR RULES//
+//////////////////////////
+negative(reg, expr) ::= <<<expr><\n><\t>%r<reg> = sub i32 0, %r<expr.reg> >>
+
+operation(reg, op, a, b) ::= <<
+<a>
+<b>
+<\t>%r<reg> = <opToInstr.(op)> i32 %r<a.reg>, %r<b.reg>
+>>
+
+//idGlobal(id, reg) ::= <<<\t>%r<reg> = load i32* @<id>>>
+idGlobal(id, reg) ::= <<<\t>%r<reg> = load i32, i32* @<id>
+>>
+
+idLocal(id, reg) ::= <<<\t>%r<reg> = load i32, i32* %<id>
+>>
+
+int(reg, variable) ::= <<<\t>%r<reg> = add i32 <variable>, 0
+>>
+
+call(reg, ID, args) ::= <<
+<args; separator="\n">
+<\t>%r<reg> = call i32(<args:{ wasted | i32}; separator=",">) @<ID>(<args:{arg | i32 %r<arg.reg>}; separator=", ">)
+>>
+
+/////////////////////////////
+//INSTANCES OF BEXPR RULES//
+///////////////////////////
+not(reg, bexpr) ::= <<
+<bexpr>
+%r<reg> = icmp eq i32 <reg>, 1
+>>
+
+true_expr(reg) ::= <<<\t>%r<reg> = icmp eq i32 1, 1>>
+
+false_expr(reg) ::= <<<\t>%r<reg> = icmp eq i32 0, 0>>
+
+bracket_bexpr() ::= <<>>
+
+opToInstr ::= [ // map operators to LLVM IR instructions
+        "+":"add",
+        "-":"sub",
+        "*":"mul",
+        "/":"sdiv",
+        "==":"icmp eq",
+        "!=":"icmp ne",
+        "<":"icmp slt",
+        ">":"icmp sgt",
+        "<=":"icmp sle",
+        ">=":"icmp sge"
+]

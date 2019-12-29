@@ -1,0 +1,21 @@
+@s = internal constant [4 x i8] c"%d\0A\00"
+declare i32 @printf(i8 *, ...)
+@a = global i32 0
+@b = global i32 0
+define i32 @main(){
+	%a = alloca i32
+	%b = alloca i32
+	%ps = getelementptr [4 x i8], [4 x i8]* @s, i32 0, i32 0
+	%r1 = add i32 3, 0
+	%r2 = sub i32 0, %r1 
+	store i32 %r2, i32* %a
+	%r3 = add i32 6, 0
+	store i32 %r3, i32* %b
+	%r4 = load i32, i32* @a
+	%r5 = sub i32 0, %r4 
+	%r6 = load i32, i32* @b
+	%r7 = sub i32 %r5, %r6
+	call i32 (i8*, ...) @printf(i8* %ps,  i32 %r7)
+	%r8 = add i32 0, 0
+	ret i32 %r8 
+} 

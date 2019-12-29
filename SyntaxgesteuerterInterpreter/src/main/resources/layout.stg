@@ -1,0 +1,3 @@
+calculation(expression, result) ::="<expression> = <result>"
+expression(expression) ::="<expression>"
+syntaxerror(n) ::="Number of syntax errors: <n>"

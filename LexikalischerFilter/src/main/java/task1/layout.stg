@@ -1,0 +1,1 @@
+expression(line, position, text) ::= "Found TIME <text> at position line <line> column <position>"

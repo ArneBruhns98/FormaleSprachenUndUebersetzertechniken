@@ -1,0 +1,38 @@
+digraph G {
+  ranksep=.25; 
+  edge [arrowsize=.5]
+  node [shape=circle, fontname="Arial",
+        fontsize=12, fixedsize=true, height=.45];
+  add [color= "green"]; add2 [color= "green"]; ggT [color= "green"]; 
+  sum [color= "red"]; sum2 [color= "red"]; fact [color= "red"]; fib [color= "red"]; mcCarthy [color= "red"]; ackermann [color= "red"]; 
+  main [color= "black"]; identity [color= "black"]; binomi [color= "black"]; kgV [color= "black"]; 
+  add -> add [color="green"];
+  add2 -> add2 [color="green"];
+  add2 -> identity [color="green"];
+  sum -> add [color="green"];
+  sum2 -> add2 [color="green"];
+  ggT -> ggT [color="green"];
+  ggT -> ggT [color="green"];
+  mcCarthy -> mcCarthy [color="green"];
+  ackermann -> ackermann [color="green"];
+  ackermann -> ackermann [color="green"];
+  sum -> sum [color="red"];
+  sum2 -> sum2 [color="red"];
+  fact -> fact [color="red"];
+  fib -> fib [color="red"];
+  fib -> fib [color="red"];
+  mcCarthy -> mcCarthy [color="red"];
+  ackermann -> ackermann [color="red"];
+  main -> sum [color="black"];
+  main -> sum2 [color="black"];
+  main -> binomi [color="black"];
+  main -> fib [color="black"];
+  main -> kgV [color="black"];
+  main -> ackermann [color="black"];
+  main -> mcCarthy [color="black"];
+  add -> identity [color="black"];
+  binomi -> fact [color="black"];
+  binomi -> fact [color="black"];
+  binomi -> fact [color="black"];
+  kgV -> ggT [color="black"];
+}

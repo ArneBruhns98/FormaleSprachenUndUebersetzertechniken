@@ -1,0 +1,1 @@
+syntax_error(n) ::="Number of syntax errors: <n>"

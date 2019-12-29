@@ -1,0 +1,3 @@
+tree(t) ::=<< <t> >>
+
+syntaxerror(n) ::="Number of syntax errors: <n>"

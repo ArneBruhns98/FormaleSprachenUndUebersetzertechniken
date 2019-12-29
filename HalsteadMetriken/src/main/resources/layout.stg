@@ -1,0 +1,7 @@
+operatoren() ::= "<\n>In the following the operators with the respective frequencies are listed:"
+
+operanden() ::= "<\n>In the following the operands with the respective frequencies are listed:"
+
+frequencies(map) ::=<< <map.keys:{k | <k> ==> <map.(k)>}; separator="\n"> >>
+
+calculations(N1, N2, n1, n2, N, n, V, D, E) ::= "<\n>Number of all operators: <N1><\n>Number of all operands: <N2><\n>Number of different operators: <n1><\n>Number of different operands: <n2><\n>Programlength: <N><\n>Vocabulary size: <n><\n>Volume of the programme: <V><\n>Difficulty level: <D><\n>Implementation effort: <E>"
