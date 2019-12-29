@@ -1,1 +1,1 @@
-# FormaleSprachenUndUebersetzertechniken
+# Formale Sprachen und Übersetzertechniken
